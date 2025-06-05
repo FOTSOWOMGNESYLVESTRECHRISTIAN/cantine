@@ -1,0 +1,9 @@
+.gallery-wrap .img-big-wrap img {
+    height: 450px;
+    width: auto;
+    display: inline-block;
+}
+
+.gallery-wrap .img-small-wrap {
+    text-align: center;
+}

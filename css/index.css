@@ -1,0 +1,88 @@
+
+body {
+    display: table-cell;
+    vertical-align: middle;
+}
+.container {
+    text-align:center;
+    padding: 1px;
+  }
+
+ .carousel-inner img {
+    width: 100%;
+    height: 100%;
+  }
+
+  .carousel-caption {
+    z-index:10;
+    color:#fff;
+    text-align:center;
+    top:auto;
+    left:65%;
+    bottom:auto;
+    transform:translate(0, -60%);
+}
+
+.p2{
+    font-size:1.3em;
+    font-family:Arial;
+}
+
+.inner{
+    overflow:hidden;
+}
+
+.inner img{
+    transition: all 1.5 ease;
+}
+
+.inner:hover img{
+    transform: scale(1.5);
+}
+
+.card .card-image, .card-no-width .card-image {
+  max-height: 230px;
+  object-fit: contain;
+}
+.collapsible {
+  background-color: #FFBD00;
+  color: white;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 15px;
+  margin-top:1%;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.1);
+}
+
+.collapsible:after {
+    content: '\002B';
+    color: white;
+    font-weight: bold;
+    float: right;
+    margin-left: 5px;
+  }
+
+.content {
+  padding: 0 18px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
+  background-color: #f1f1f1;
+}
+
+.p3{
+    float:left;
+}
+
+.abutton{
+  text-decoration: none;
+  color:white;
+}
+
+@media screen and (max-width:600px){
+  .in1 {margin-top:55px}
+}
