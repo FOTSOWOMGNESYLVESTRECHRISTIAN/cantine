@@ -1,3 +1,4 @@
+<?php $redirectTarget = isset($_GET['next']) ? $_GET['next'] : $_SERVER['REQUEST_URI']; $redirectTarget = htmlspecialchars($redirectTarget, ENT_QUOTES); ?>
 <head>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <!-- Latest compiled and minified CSS -->
@@ -55,6 +56,7 @@
           <!-- Login -->
           <div id="id01" class="modal">
             <form class="modal-content animate" action="database/logincode.php" method="post">
+                <input type="hidden" name="redirect" value="<?php echo $redirectTarget; ?>">
               <div class="imgcontainer">
                 <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
                 </div>
@@ -81,6 +83,7 @@
             <!-- Sign Up -->
             <div id="id02" class="modal">
                 <form class="modal-content animate" name="register" action="database/registercode.php" method="POST" style="margin-top:-20px;">
+                    <input type="hidden" name="redirect" value="<?php echo $redirectTarget; ?>">
                     <div class="imgcontainer">
                     <span onclick="document.getElementById('id02').style.display='none'" class="close" title="Close Modal">&times;</span>
                     </div>

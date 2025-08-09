@@ -1,5 +1,6 @@
 <?php
 include "connection.php";
+session_start();
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
@@ -55,8 +56,23 @@ $gump->filter_rules(array(
           $query = "INSERT INTO customer(Name,Email,PhoneNo,Address,Password) VALUES ('$Name','$Email','$PhoneNo','$Address','$Password')";
           $result = mysqli_query($conn , $query) or die(mysqli_error($conn));
           if (mysqli_affected_rows($conn) > 0) { 
-            echo "<script>alert('Registration Successfully! You Can Login Now!');
-            window.location.href='../index.php'</script>";
+            // Auto login and redirect
+            $cus_id = mysqli_insert_id($conn);
+            $_SESSION['cus_id'] = $cus_id;
+            $_SESSION['Name'] = $Name;
+            $_SESSION['Email'] = $Email;
+            $_SESSION['PhoneNo'] = $PhoneNo;
+            $_SESSION['Address'] = $Address;
+
+            $redirect = isset($_POST['redirect']) ? $_POST['redirect'] : '';
+            // sanitize and ensure internal redirect only
+            $redirect = filter_var($redirect, FILTER_SANITIZE_URL);
+            $parts = parse_url($redirect);
+            if (isset($parts['scheme']) || isset($parts['host']) || strpos($redirect, '\\') !== false || empty($redirect)) {
+              $redirect = '../userprofile.php';
+            }
+            header('Location: ' . $redirect);
+            exit;
     }
     else {
       echo "<script>alert('Error ');</script>";
