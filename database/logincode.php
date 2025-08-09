@@ -1,42 +1,50 @@
 <?php
 include "connection.php";
 session_start();
-if (isset($_POST['login'])) {
-  $Email  = $_POST['Email'];
-  $Password = $_POST['Password'];
-  mysqli_real_escape_string($conn, $Email);
-  mysqli_real_escape_string($conn, $Password);
-$query = "SELECT * FROM customer WHERE Email = '$Email'";
-$result = mysqli_query($conn , $query) or die (mysqli_error($conn));
-if (mysqli_num_rows($result) > 0) {
-  while ($row = mysqli_fetch_array($result)) {
-    $cus_id = $row['cus_id'];
-    $Name = $row['Name'];
-    $Email = $row['Email'];
-    $pass = $row['Password'];
-    $PhoneNo = $row['PhoneNo'];
-    $Address = $row['Address'];
- 
-    if (password_verify($Password, $pass )) {
-      $_SESSION['cus_id'] = $cus_id;
-      $_SESSION['Name'] = $Name;
-      $_SESSION['Email'] = $Email;
-      $_SESSION['email']  = $email;
-      $_SESSION['PhoneNo'] = $PhoneNo;
-      $_SESSION['Address'] = $Address;
-      header('location: ../userprofile.php');
-    }
-    else {
-      echo "<script>alert('invalid username/password !');
-      window.location.href= '../index.php';</script>";
 
+function resolve_redirect($raw_redirect) {
+    if (!$raw_redirect) { return null; }
+    $redirect = filter_var($raw_redirect, FILTER_SANITIZE_URL);
+    $parts = parse_url($redirect);
+    if (isset($parts['scheme']) || isset($parts['host'])) {
+        return null;
     }
-  }
+    if (strpos($redirect, '\\') !== false) { return null; }
+    return $redirect;
 }
-else {
-      echo "<script>alert('invalid username/password');
-      window.location.href= '../index.php';</script>";
 
+if (isset($_POST['login'])) {
+    $Email  = isset($_POST['Email']) ? trim($_POST['Email']) : '';
+    $Password = isset($_POST['Password']) ? $_POST['Password'] : '';
+    $redirectParam = isset($_POST['redirect']) ? $_POST['redirect'] : '';
+
+    $stmt = $conn->prepare("SELECT cus_id, Name, Email, Password, PhoneNo, Address FROM customer WHERE Email = ? LIMIT 1");
+    if ($stmt) {
+        $stmt->bind_param('s', $Email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($result && $result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            if (password_verify($Password, $row['Password'])) {
+                $_SESSION['cus_id'] = $row['cus_id'];
+                $_SESSION['Name'] = $row['Name'];
+                $_SESSION['Email'] = $row['Email'];
+                $_SESSION['PhoneNo'] = $row['PhoneNo'];
+                $_SESSION['Address'] = $row['Address'];
+
+                $redirect = resolve_redirect($redirectParam);
+                if (!$redirect) { $redirect = '../userprofile.php'; }
+                header('Location: ' . $redirect);
+                exit;
+            }
+        }
+        $stmt->close();
     }
+
+    echo "<script>alert('invalid username/password !'); window.location.href= '../index.php';</script>";
+    exit;
+} else {
+    echo "<script>alert('invalid username/password'); window.location.href= '../index.php';</script>";
+    exit;
 }
 ?>
